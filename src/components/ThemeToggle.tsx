@@ -9,20 +9,23 @@ export default function ThemeToggle() {
     // 获取系统或用户存储的主题
     const savedTheme = localStorage.getItem('theme') || 'system';
     setTheme(savedTheme);
-    
-    // 如果是system，则根据系统偏好设置
-    if (savedTheme === 'system') {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
-    } else {
-      document.documentElement.setAttribute('data-theme', savedTheme);
-    }
+
+    const applyTheme = (themeToApply: string) => {
+      const isDark = themeToApply === 'dark' || (themeToApply === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    };
+
+    applyTheme(savedTheme);
 
     // 监听系统主题变化
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = () => {
       if (theme === 'system') {
-        document.documentElement.setAttribute('data-theme', mediaQuery.matches ? 'dark' : 'light');
+        applyTheme('system');
       }
     };
 
@@ -34,17 +37,17 @@ export default function ThemeToggle() {
     const newTheme = theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light';
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
-    
-    if (newTheme === 'system') {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+
+    const isDark = newTheme === 'dark' || (newTheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (isDark) {
+      document.documentElement.classList.add('dark');
     } else {
-      document.documentElement.setAttribute('data-theme', newTheme);
+      document.documentElement.classList.remove('dark');
     }
   };
 
   return (
-    <button 
+    <button
       onClick={toggleTheme}
       className="p-2 rounded-md hover:bg-muted transition-colors"
       aria-label="切换主题"
@@ -74,4 +77,4 @@ export default function ThemeToggle() {
       )}
     </button>
   );
-} 
+}

@@ -117,6 +117,6 @@ export default function Performance() {
 // 声明全局gtag类型
 declare global {
   interface Window {
-    gtag?: (...args: any[]) => void;
+    gtag?: (...args: unknown[]) => void;
   }
 } 

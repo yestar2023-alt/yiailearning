@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 interface AuthorInfo {
   name: string;
   description: string;
@@ -54,9 +56,11 @@ export function AuthorCard({ author, showDescription = true }: AuthorCardProps) 
       <AuthorSchema author={author} />
       
       {author.image && (
-        <img 
+        <Image
           src={author.image} 
           alt={author.name}
+          width={64}
+          height={64}
           className="w-16 h-16 rounded-full object-cover"
         />
       )}

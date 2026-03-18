@@ -1,161 +1,400 @@
-/* postcss-ignore */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --primary-rgb: 243, 156, 18; /* 橙色 #F39C12 */
-  --secondary-rgb: 44, 62, 80; /* 深蓝灰 #2C3E50 */
-  --accent-rgb: 194, 208, 169; /* 浅绿色 #c2d0a9 */
-  
-  --background-rgb: 255, 255, 255;
-  --card-rgb: 255, 255, 255;
-  --muted-rgb: 242, 242, 242;
-  --subtle-rgb: 229, 231, 235;
-  
-  --text-rgb: 51, 51, 51;
-  --text-secondary-rgb: 102, 102, 102;
-}
-
-[data-theme="dark"] {
-  --primary-rgb: 243, 156, 18; /* 保持橙色 #F39C12 */
-  --secondary-rgb: 204, 204, 204; 
-  --accent-rgb: 194, 208, 169; /* 保持浅绿色 #c2d0a9 */
-  
-  --background-rgb: 18, 18, 18;
-  --card-rgb: 30, 30, 30;
-  --muted-rgb: 40, 40, 40;
-  --subtle-rgb: 50, 50, 50;
-  
-  --text-rgb: 229, 229, 229;
-  --text-secondary-rgb: 178, 178, 178;
-}
-
 @layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
   body {
-    @apply bg-background text-text transition-colors duration-300 font-normal;
-    /* TEMPORARY TEST: Apply pen cursor directly */
-    cursor: url('/cursors/pen.png'), auto !important;
+    @apply bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark transition-colors duration-300 min-h-screen flex flex-col font-body antialiased;
+    background-image:
+      /* 主光晕 - 左上角 */
+      radial-gradient(ellipse 80% 50% at 0% 0%, rgba(184, 149, 94, 0.08), transparent 60%),
+      /* 次要光晕 - 右上角 */
+      radial-gradient(ellipse 60% 40% at 100% 0%, rgba(166, 139, 91, 0.05), transparent 50%),
+      /* 底部光晕 */
+      radial-gradient(ellipse 50% 30% at 50% 100%, rgba(184, 149, 94, 0.04), transparent 50%),
+      /* 微妙噪点纹理 */
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
   }
-  
-  /* 更好的排版 */
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-bold text-primary;
+
+  /* 改善字体渲染 */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  
-  h1 {
-    @apply text-4xl mb-6 tracking-tight;
+
+  .dark body {
+    background-image:
+      /* 主光晕 - 左上角 - 深色模式更亮 */
+      radial-gradient(ellipse 80% 50% at 0% 0%, rgba(184, 149, 94, 0.12), transparent 60%),
+      /* 次要光晕 - 右上角 */
+      radial-gradient(ellipse 60% 40% at 100% 0%, rgba(166, 139, 91, 0.08), transparent 50%),
+      /* 底部光晕 */
+      radial-gradient(ellipse 50% 30% at 50% 100%, rgba(184, 149, 94, 0.06), transparent 50%),
+      /* 微妙噪点纹理 */
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
   }
-  
-  h2 {
-    @apply text-3xl mb-5 tracking-tight;
+
+  /* 选中文本样式 */
+  ::selection {
+    @apply text-white;
+    background-color: rgba(184, 149, 94, 0.5);
   }
-  
-  h3 {
-    @apply text-2xl mb-4;
+
+  /* 滚动条样式 */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
   }
-  
-  p {
-    @apply leading-relaxed;
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
   }
-  
-  a {
-    @apply text-primary hover:underline transition-all duration-200;
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-primary/25 transition-colors hover:bg-primary/40 dark:bg-accent/25 dark:hover:bg-accent/40;
+  }
+
+  /* 焦点样式 */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary/70 ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark;
+  }
+
+  /* 减少动画（用户偏好设置） */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
 @layer components {
+  /* 卡片组件 */
   .card {
-    @apply bg-card border border-subtle rounded-xl shadow-sm overflow-hidden transition-all duration-300;
+    @apply bg-card-light/95 dark:bg-card-dark/95 border border-subtle/80 dark:border-subtle-dark/80 rounded-2xl shadow-card overflow-hidden transition-all duration-500 backdrop-blur-md;
+    position: relative;
   }
-  
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(184, 149, 94, 0.03) 0%, transparent 50%, rgba(166, 139, 91, 0.02) 100%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .card:hover::before {
+    opacity: 1;
+  }
+
+  .card-hover {
+    @apply hover:shadow-card-hover hover:-translate-y-1 hover:border-primary/20;
+  }
+
+  /* 按钮组件 */
   .btn {
-    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all duration-300 shadow-sm;
+    @apply font-medium py-2.5 px-5 rounded-xl transition-all duration-300 inline-flex items-center justify-center gap-2 relative overflow-hidden;
   }
-  
+
+  .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .btn:hover::before {
+    opacity: 1;
+  }
+
   .btn-primary {
-    @apply bg-primary text-white hover:brightness-105 active:brightness-95;
+    @apply bg-primary hover:bg-primary-hover text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 active:scale-95;
+    background-image: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
   }
-  
+
   .btn-secondary {
-    @apply bg-muted text-secondary hover:brightness-95 active:brightness-90;
+    @apply bg-card-light/80 dark:bg-card-dark/80 border border-subtle/80 dark:border-subtle-dark/80 text-text-main-light dark:text-text-main-dark hover:bg-muted hover:border-primary/20 dark:hover:bg-muted-dark active:scale-95 backdrop-blur-sm;
   }
-  
-  /* 动画过渡效果 */
-  .hover-lift {
-    @apply transition-transform duration-300 hover:-translate-y-1;
+
+  .btn-ghost {
+    @apply text-secondary hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 active:scale-95;
   }
-  
-  .hover-card {
-    @apply transition-all duration-300 hover:shadow-md hover:-translate-y-1;
+
+  /* 输入框组件 */
+  .input {
+    @apply w-full px-4 py-3 rounded-xl border border-subtle/80 dark:border-subtle-dark/80 bg-card-light/80 dark:bg-card-dark/80 text-text-main-light dark:text-text-main-dark placeholder:text-secondary transition-all duration-300;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(255, 255, 255, 0.5);
+  }
+
+  .input:focus {
+    @apply border-primary/50 outline-none;
+    box-shadow: 0 0 0 3px rgba(184, 149, 94, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.02);
+  }
+
+  .dark .input {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  /* 容器 */
+  .container-narrow {
+    @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .container-normal {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* 文本样式 */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #B8955E 0%, #D4B896 30%, #A68B5B 70%, #C4A97A 100%);
+    background-size: 200% auto;
+    animation: shimmer 4s ease infinite;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* 徽章 */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+    background: linear-gradient(135deg, rgba(184, 149, 94, 0.1) 0%, rgba(166, 139, 91, 0.08) 100%);
+    color: #7A6340;
+    border: 1px solid rgba(184, 149, 94, 0.25);
+    transition: all 0.3s ease;
+  }
+
+  .badge:hover {
+    background: linear-gradient(135deg, rgba(184, 149, 94, 0.15) 0%, rgba(166, 139, 91, 0.12) 100%);
+    border-color: rgba(184, 149, 94, 0.35);
+    transform: translateY(-1px);
+  }
+
+  .dark .badge {
+    color: #D4B896;
+    background: linear-gradient(135deg, rgba(184, 149, 94, 0.18) 0%, rgba(166, 139, 91, 0.12) 100%);
+    border-color: rgba(184, 149, 94, 0.3);
+  }
+
+  .article-prose {
+    @apply prose prose-lg max-w-none text-secondary dark:text-muted;
+  }
+
+  .article-prose > :first-child {
+    margin-top: 0;
+  }
+
+  .article-prose > :last-child {
+    margin-bottom: 0;
+  }
+
+  .article-prose h2,
+  .article-prose h3,
+  .article-prose h4 {
+    @apply font-semibold tracking-tight text-text-main-light dark:text-text-main-dark;
+  }
+
+  .article-prose h2 {
+    @apply mt-14 border-t border-subtle/80 pt-8 text-[1.9rem] dark:border-white/10;
+  }
+
+  .article-prose h3 {
+    @apply mt-10 text-[1.45rem];
+  }
+
+  .article-prose p,
+  .article-prose li {
+    @apply text-secondary leading-8 dark:text-muted;
+  }
+
+  .article-prose a {
+    @apply font-medium text-primary underline decoration-primary/30 underline-offset-4 transition-colors duration-200;
+  }
+
+  .article-prose a:hover {
+    @apply text-primary-hover decoration-primary/50;
+  }
+
+  .article-prose strong {
+    @apply font-semibold text-text-main-light dark:text-text-main-dark;
+  }
+
+  .article-prose ul,
+  .article-prose ol {
+    @apply my-6 space-y-3;
+  }
+
+  .article-prose li::marker {
+    color: rgba(184, 149, 94, 0.85);
+  }
+
+  .article-prose :not(pre) > code {
+    @apply rounded-md border border-primary/10 px-1.5 py-0.5 font-medium text-primary dark:border-primary/20 dark:text-primary-light;
+    background-color: rgba(184, 149, 94, 0.08);
+  }
+
+  .article-prose pre {
+    @apply overflow-x-auto rounded-[1.5rem] border border-subtle/80 px-5 py-5 text-[0.95rem] leading-7 shadow-soft dark:border-white/10;
+    background:
+      linear-gradient(180deg, rgba(19, 32, 51, 0.98), rgba(16, 24, 39, 1));
+  }
+
+  .article-prose pre code {
+    @apply bg-transparent p-0 text-[0.95rem] text-slate-100;
+    border: 0;
+  }
+
+  .article-prose blockquote {
+    @apply my-8 rounded-r-[1.75rem] border-l-4 border-accent px-6 py-4 italic text-secondary shadow-soft dark:text-muted;
+    background:
+      linear-gradient(135deg, rgba(184, 149, 94, 0.08), rgba(166, 139, 91, 0.05));
+  }
+
+  .article-prose hr {
+    @apply my-10 border-subtle dark:border-white/10;
+  }
+
+  .article-prose table {
+    @apply my-8 w-full overflow-hidden rounded-[1.25rem] border border-subtle/80 text-left text-base dark:border-white/10;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .article-prose thead {
+    background-color: rgba(184, 149, 94, 0.08);
+  }
+
+  .dark .article-prose thead {
+    background-color: rgba(184, 149, 94, 0.16);
+  }
+
+  .article-prose th {
+    @apply px-4 py-3 font-semibold text-text-main-light dark:text-text-main-dark;
+  }
+
+  .article-prose td {
+    @apply border-t border-subtle/70 px-4 py-3 text-secondary dark:border-white/10 dark:text-muted;
+  }
+
+  .article-prose img {
+    @apply rounded-[1.5rem] border border-subtle/80 shadow-soft dark:border-white/10;
+  }
+
+  .article-prose figure {
+    @apply my-8;
+  }
+
+  .article-prose figcaption {
+    @apply mt-3 text-center text-sm text-subtle dark:text-muted;
+  }
+
+  /* 分隔线 */
+  .divider {
+    @apply border-t border-subtle dark:border-white/10;
+  }
+
+  /* 动画类 */
+  .animate-on-scroll {
+    @apply opacity-0 translate-y-4 transition-all duration-500;
+  }
+
+  .animate-on-scroll.is-visible {
+    @apply opacity-100 translate-y-0;
   }
 }
 
 @layer utilities {
-  .text-text {
-    color: rgb(var(--text-rgb));
+  /* 文本截断 */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
   }
 
-  .text-primary {
-    color: rgb(var(--primary-rgb));
-  }
-  
-  .text-secondary {
-    color: rgb(var(--text-secondary-rgb));
-  }
-  
-  .bg-primary {
-    background-color: rgb(var(--primary-rgb));
-  }
-  
-  .bg-secondary {
-    background-color: rgb(var(--secondary-rgb));
-  }
-  
-  .bg-accent {
-    background-color: rgb(var(--accent-rgb));
-  }
-  
-  .bg-background {
-    background-color: rgb(var(--background-rgb));
-  }
-  
-  .bg-card {
-    background-color: rgb(var(--card-rgb));
-  }
-  
-  .bg-muted {
-    background-color: rgb(var(--muted-rgb));
-  }
-  
-  .border-subtle {
-    border-color: rgb(var(--subtle-rgb));
-  }
-  
-  /* 文本修饰 */
   .line-clamp-2 {
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
   }
-  
+
   .line-clamp-3 {
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
   }
-}
 
-/* Custom Cursors - Temporarily commented out for direct body test
-html body.cursor-pen {
-  cursor: url('/cursors/pen.png'), auto !important; 
-}
-html body.cursor-lightbulb {
-  cursor: url('/cursors/lightbulb.png'), auto !important; 
-}
-*/
+  .line-clamp-4 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+  }
 
-/* Ensure high contrast for accessibility on custom cursors if needed */
-/* You might need to adjust hotspot of cursor in .cur files or via CSS if it's off */ 
+  /* 玻璃效果 */
+  .glass {
+    @apply backdrop-blur-xl;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%);
+    border-bottom: 1px solid rgba(184, 149, 94, 0.1);
+  }
+
+  .glass-strong {
+    @apply backdrop-blur-2xl;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.9) 100%);
+  }
+
+  .glass::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(184, 149, 94, 0.2) 50%, transparent 100%);
+  }
+
+  /* 阴影增强 */
+  .shadow-soft {
+    box-shadow: 0 22px 48px -34px rgba(15, 23, 42, 0.15);
+  }
+
+  .shadow-glow {
+    box-shadow: 0 0 28px rgba(184, 149, 94, 0.2);
+  }
+
+  .dark .glass {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.85) 100%);
+    border-bottom: 1px solid rgba(184, 149, 94, 0.15);
+  }
+
+  .dark .glass-strong {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(15, 23, 42, 0.92) 100%);
+  }
+
+  /* 间距工具 */
+  .space-y-responsive {
+    @apply space-y-4 sm:space-y-6 lg:space-y-8;
+  }
+
+  /* 响应式隐藏 */
+  .hide-mobile {
+    @apply hidden sm:block;
+  }
+
+  .hide-desktop {
+    @apply sm:hidden;
+  }
+}

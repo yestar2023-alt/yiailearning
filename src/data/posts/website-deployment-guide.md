@@ -1,9 +1,12 @@
 ---
-title: "如何快速部署网站并绑定域名：完整实战指南"
+title: "如何快速部署网站并绑定域名：从 GitHub 到 Vercel 的完整实战指南"
 date: "2024-12-25"
-description: "详细记录网站部署上线的完整流程，包括GitHub代码托管、Cloudflare域名解析、Vercel自动化部署等关键步骤，帮助你快速上线自己的网站。"
+description: "详细记录网站部署上线的完整流程，包括 GitHub 代码托管、Cloudflare 域名解析、Vercel 自动化部署等关键步骤，帮助你更稳地把网站上线。"
+summary: "这是一篇从代码托管到域名解析再到正式上线的完整部署记录。内容覆盖 GitHub、Cloudflare 和 Vercel 的实际配置步骤，适合第一次做个人网站或博客部署的人快速照着走一遍，少踩一些域名解析、HTTPS、自动部署和上线联调上的坑。"
+excerpt: "从 GitHub 托管到 Cloudflare 域名解析，再到 Vercel 自动部署，这篇文章把个人网站上线过程中最关键的步骤和容易踩坑的地方都整理出来了。"
 tags: ["部署", "域名", "Vercel", "Cloudflare", "GitHub"]
 category: "技术教程"
+keywords: "网站部署,域名绑定,Vercel 部署,Cloudflare DNS,GitHub 托管,博客上线"
 ---
 
 ## 如何快速部署网站并绑定域名：完整实战指南

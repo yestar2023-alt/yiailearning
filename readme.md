@@ -199,7 +199,14 @@ NEXT_PUBLIC_SITE_URL=https://yourdomain.com
 
 # Search Console验证码
 NEXT_PUBLIC_GOOGLE_VERIFICATION=your-google-verification-code
+
+# 微信公众号二维码
+NEXT_PUBLIC_WECHAT_QR_IMAGE=/wechat-qr.png
+NEXT_PUBLIC_WECHAT_OFFICIAL_ACCOUNT=你的公众号名称
+NEXT_PUBLIC_WECHAT_DESCRIPTION=同步更新文章整理、AI 工具实践和工作流心得
 ```
+
+微信公众号二维码图片建议放到 `public/wechat-qr.png`。文章页侧栏和 About 页会自动显示订阅卡片。
 
 ### SEO功能
 

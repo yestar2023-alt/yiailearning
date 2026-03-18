@@ -1,0 +1,54 @@
+# 依赖和构建文件
+node_modules
+.next
+dist
+build
+
+# 日志文件
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 环境变量文件
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 缓存文件
+.cache
+.parcel-cache
+
+# 临时文件
+*.tmp
+*.temp
+
+# OS生成的文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 脚本文件
+scripts/build-search.js
+scripts/seo-checker.js
+scripts/performance-audit.js
+scripts/validate-images.js
+scripts/toggle-sections.js
+
+# 配置文件
+tailwind.config.js
+postcss.config.js
+tsconfig.json
+next.config.js
+
+# JSON文件（保留原始格式）
+package.json
+package-lock.json
+yarn.lock
+public/search/search-data.json

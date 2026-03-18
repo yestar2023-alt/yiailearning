@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ChevronRightIcon, HomeIcon } from '@heroicons/react/24/outline';
+import { siteConfig } from '@/lib/config';
 
 interface BreadcrumbItem {
   name: string;
@@ -20,7 +21,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
       "@type": "ListItem",
       "position": index + 1,
       "name": item.name,
-      "item": `https://yoursite.com${item.href}`
+      "item": `${siteConfig.url}${item.href}`
     }))
   };
 
@@ -35,10 +36,10 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
       />
       
       {/* 面包屑导航 */}
-      <nav className="flex items-center space-x-2 text-sm text-secondary mb-6" aria-label="Breadcrumb">
+      <nav className="mb-6 flex items-center space-x-2 text-sm text-secondary" aria-label="Breadcrumb">
         <Link 
           href="/" 
-          className="flex items-center hover:text-primary transition-colors"
+          className="flex items-center rounded-full border border-subtle/80 px-2.5 py-1.5 hover:text-primary hover:border-primary/20 transition-colors"
           title="首页"
         >
           <HomeIcon className="h-4 w-4" />
@@ -47,7 +48,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
         
         {items.map((item, index) => (
           <div key={item.href} className="flex items-center space-x-2">
-            <ChevronRightIcon className="h-4 w-4 text-muted" />
+            <ChevronRightIcon className="h-4 w-4 text-primary/60" />
             {item.current ? (
               <span className="font-medium text-primary" aria-current="page">
                 {item.name}

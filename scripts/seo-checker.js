@@ -25,16 +25,31 @@ function getAllPosts() {
     .filter(name => name.endsWith('.md'))
     .map(filename => {
       const fullPath = path.join(postsDirectory, filename);
-      const fileContents = fs.readFileSync(fullPath, 'utf8');
-      const { data, content } = matter(fileContents);
-      
-      return {
-        filename,
-        meta: data,
-        content,
-        slug: filename.replace(/\.md$/, '')
-      };
-    });
+
+      try {
+        const fileContents = fs.readFileSync(fullPath, 'utf8');
+        const { data, content } = matter(fileContents);
+
+        return {
+          filename,
+          meta: data,
+          content,
+          slug: filename.replace(/\.md$/, '')
+        };
+      } catch (error) {
+        return {
+          filename,
+          meta: {
+            title: filename,
+            summary: '',
+          },
+          content: '',
+          slug: filename.replace(/\.md$/, ''),
+          parseError: error instanceof Error ? error.message : 'Unknown error',
+        };
+      }
+    })
+    .filter(post => post.meta?.draft !== true && post.meta?.published !== false);
 }
 
 // 检查标题SEO
@@ -75,6 +90,10 @@ function checkSummary(summary) {
   }
   
   return issues;
+}
+
+function getSummaryValue(meta) {
+  return meta.summary || meta.excerpt || meta.description || '';
 }
 
 // 检查标签
@@ -162,10 +181,15 @@ function checkImageAlt(content) {
 // 主检查函数
 function checkPostSEO(post) {
   const issues = [];
+
+  if (post.parseError) {
+    issues.push(`❌ Frontmatter 解析失败: ${post.parseError}`);
+    return issues;
+  }
   
   // 检查各个方面
   issues.push(...checkTitle(post.meta.title));
-  issues.push(...checkSummary(post.meta.summary));
+  issues.push(...checkSummary(getSummaryValue(post.meta)));
   issues.push(...checkTags(post.meta.tags));
   issues.push(...checkContentLength(post.content));
   issues.push(...checkKeywordDensity(post.content, post.meta.keywords));
@@ -174,7 +198,7 @@ function checkPostSEO(post) {
   
   // 检查必要字段 - 已移除封面图片要求
   
-  if (!post.meta.excerpt) {
+  if (!post.meta.excerpt && !post.meta.description) {
     issues.push('⚠️ 建议添加excerpt字段用于社交分享');
   }
   
