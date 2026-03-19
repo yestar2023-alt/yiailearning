@@ -80,6 +80,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang={siteConfig.language} suppressHydrationWarning>
+      <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+      </head>
       <body className={`${fontClasses} bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark transition-colors duration-300 min-h-screen flex flex-col`}>
         {/* 性能监控 */}
         <PerformanceMonitor />
